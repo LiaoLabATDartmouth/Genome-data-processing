@@ -85,12 +85,15 @@ num_variants_step2=$(bcftools view -H ../wgs/cohort.filtered.hf.gt.vcf.gz | wc -
 bcftools filter -S . -e 'FMT/DP<10 | FMT/GQ<20' -O z -o ../wgs/cohort.filtered.hf.DP10.GQ20.gt.vcf.gz ../wgs/cohort.filtered.hf.gt.vcf.gz
 num_variants_step3=$(bcftools view -H ../wgs/cohort.filtered.hf.DP10.GQ20.gt.vcf.gz | wc -l)
 
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Further filtering 2: remove monomorphic SNPs/INDELs, multiallelic SNPs and indels, SNPs in the close proximity of INDELS, and clusters of INDELs with a window
+#---------------------------------------------------------------------------------------------------------------------------------------------
+# Further filtering 2: remove monomorphic SNPs/INDELs, multiallelic SNPs and indels, SNPs in the close proximity of INDELS, and INDEL clusters
 # & and | apply multiple filters to the same sample simultaneously, while && and || apply to different samples independently
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------
 # AC==0: no variants (all the same as the reference)
 # AC==AN: only alternative alleles are called. Do not include AC==AN if a site where only alternative alleles are called is considered as a variant.
+# IndelGap: filter clusters of indels separated by INT or fewer base pairs allowing only one to pass
+# SnpGap: filter SNPs within INT base pairs of an indel or other variant type
+# bcftools view: -m2 means at least 2 alleles, -M2 means at most 2 alleles, -O z means output compressed VCF
 bcftools filter -e 'AC==0 || AC==AN' --IndelGap 5 --SnpGap 10 ../wgs/cohort.filtered.hf.DP10.GQ20.gt.vcf.gz | bcftools view -m2 -M2 -O z -o ../wgs/cohort.filtered.hf.DP10.GQ20.allele.gt.vcf.gz
 #bcftools filter -e 'AC==0' --IndelGap 5 --SnpGap 10 ../wgs/cohort.filtered.hf.DP10.GQ20.gt.vcf.gz | bcftools view -m2 -M2 -O z -o ../wgs/cohort.filtered.hf.DP10.GQ20.allele.gt.vcf.gz
 num_variants_step4=$(bcftools view -H ../wgs/cohort.filtered.hf.DP10.GQ20.allele.gt.vcf.gz | wc -l)
@@ -112,6 +115,7 @@ num_variants_step5=$(bcftools view -H ../wgs/cohort.filtered.hf.DP10.GQ20.allele
 #----------------------------------------
 # Further filtering 4: remove SNPclusters
 #----------------------------------------
+# A SNP cluster is defined as 3 SNPs within a window of 10 bases
 ../gatk-4.1.9.0/gatk VariantFiltration \
     -V ../wgs/cohort.filtered.hf.DP10.GQ20.allele.repmask.trf.gt.vcf.gz\
     -cluster 3 -window 10\
@@ -138,7 +142,7 @@ echo "Number of variants at each filtering step:" > ../wgs/filtering_stats.txt
 echo "Number of unfiltered variants: #Total=$num_variants_step1(#SNP=$num_snps_step1,#INDEL=$num_indels_step1,#MIXED=$num_mixed_step1)" >> ../wgs/filtering_stats.txt
 echo "Number of variants after hard filtering: #Total=$num_variants_step2" >> ../wgs/filtering_stats.txt
 echo "Number of variants after filtering by DP and GQ: #Total=$num_variants_step3" >> ../wgs/filtering_stats.txt
-echo "Number of variants after filtering by alleles 1: #Total=$num_variants_step4" >> ../wgs/filtering_stats.txt
+echo "Number of variants after filtering by number of alleles: #Total=$num_variants_step4" >> ../wgs/filtering_stats.txt
 echo "Number of variants after filtering by repetitive regions: #Total=$num_variants_step5" >> ../wgs/filtering_stats.txt
 echo "Number of variants after removing SNP clusters: #Total=$num_variants_step6" >> ../wgs/filtering_stats.txt
 echo "Number of filtered variants: #Total=$num_variants_step7(#SNP=$num_snps_step7,#INDEL=$num_indels_step7,#MIXED=$num_mixed_step7)" >> ../wgs/filtering_stats.txt
