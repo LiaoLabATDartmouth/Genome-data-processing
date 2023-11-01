@@ -95,7 +95,6 @@ num_variants_step3=$(bcftools view -H ../wgs/cohort.filtered.hf.DP10.GQ20.gt.vcf
 # SnpGap: filter SNPs within INT base pairs of an indel or other variant type
 # bcftools view: -m2 means at least 2 alleles, -M2 means at most 2 alleles, -O z means output compressed VCF
 bcftools filter -e 'AC==0 || AC==AN' --IndelGap 5 --SnpGap 10 ../wgs/cohort.filtered.hf.DP10.GQ20.gt.vcf.gz | bcftools view -m2 -M2 -O z -o ../wgs/cohort.filtered.hf.DP10.GQ20.allele.gt.vcf.gz
-#bcftools filter -e 'AC==0' --IndelGap 5 --SnpGap 10 ../wgs/cohort.filtered.hf.DP10.GQ20.gt.vcf.gz | bcftools view -m2 -M2 -O z -o ../wgs/cohort.filtered.hf.DP10.GQ20.allele.gt.vcf.gz
 num_variants_step4=$(bcftools view -H ../wgs/cohort.filtered.hf.DP10.GQ20.allele.gt.vcf.gz | wc -l)
 
 #--------------------------------------------------------------
