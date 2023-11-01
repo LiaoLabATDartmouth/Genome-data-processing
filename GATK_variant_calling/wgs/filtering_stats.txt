@@ -2,7 +2,7 @@ Number of variants at each filtering step:
 Number of unfiltered variants: #Total=   44920(#SNP=   41473,#INDEL=    3241,#MIXED=     206)
 Number of variants after hard filtering: #Total=   42267
 Number of variants after filtering by DP and GQ: #Total=   42267
-Number of variants after filtering by alleles 1: #Total=    4294
+Number of variants after filtering by number of alleles: #Total=    4294
 Number of variants after filtering by repetitive regions: #Total=    4200
 Number of variants after removing SNP clusters: #Total=    2992
 Number of filtered variants: #Total=    2992(#SNP=    2475,#INDEL=     517,#MIXED=       0)
