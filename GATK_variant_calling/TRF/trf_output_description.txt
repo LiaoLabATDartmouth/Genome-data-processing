@@ -1,0 +1,16 @@
+A tandem repeat is a sequence of two or more DNA bases that is repeated numerous times in a head-to-tail manner on a chromosome.
+
+....CAGCAGCAGCAG....
+
+Descriptions of the columns:
+cols 1+2:  Indices of the repeat relative to the start of the sequence
+col 3:     Period size of the repeat
+col 4:     Number of copies aligned with the consensus pattern
+col 5:     Size of consensus pattern (may differ slightly from the period size)
+col 6:     Percent of matches between adjacent copies overall
+col 7:     Percent of indels between adjacent copies overall
+col 8:     Alignment score
+cols 9-12: Percent composition for each of the four nucleotides
+col 13:    Entropy measure based on percent composition
+col 14:    Consensus sequence
+col 15:    Repeat sequence
